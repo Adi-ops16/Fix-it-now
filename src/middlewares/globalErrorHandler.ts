@@ -1,3 +1,4 @@
+import type { Request, Response, NextFunction } from "express";
 import config from "../config";
 
 type ErrorResponse = {
@@ -6,7 +7,7 @@ type ErrorResponse = {
     error?: string;
 }
 
-const globalErrorHandler = (err: any, req: any, res: any, next: any) => {
+const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
     const code = err.code || 500;
     const message = err.message || 'Internal Server Error';
 

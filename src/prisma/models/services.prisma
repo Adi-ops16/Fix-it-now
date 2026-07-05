@@ -1,0 +1,17 @@
+model Service {
+    id             Int      @id @default(autoincrement())
+    title          String   @db.VarChar(150)
+    description    String
+    price          Float
+    estimated_time Int //minutes
+    created_at     DateTime @default(now())
+    updated_at     DateTime @default(now()) @updatedAt
+
+    technician_id String
+    technician    TechnicianProfile @relation(fields: [technician_id], references: [id], onDelete: Cascade)
+
+    category_id Int
+    category    Categories @relation(fields: [category_id], references: [id], onDelete: Cascade)
+
+    @@map("services")
+}

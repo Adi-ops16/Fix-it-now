@@ -1,9 +1,7 @@
 import status from "http-status"
 import { prisma } from "../lib/prisma"
 import type { ICreateUserPayload, IUpdateUserPayload } from "../types"
-import { AppError } from "../utils"
-import bcrypt from 'bcrypt'
-import config from "../config"
+import { AppError, hashPassword } from "../utils"
 import { Role } from "../prisma/generated/prisma/enums"
 
 const getAllUsers = async () => {
@@ -20,17 +18,21 @@ const createUser = async (payload: ICreateUserPayload) => {
     })
 
     if (isUserExist) {
-        throw new AppError(status.CONFLICT, "Account already exists, please try again")
+        throw new AppError(status.CONFLICT, "Account already exists, please login")
     }
 
-    const hashedPassword = await bcrypt.hash(payload.password, Number(config.bcrypt_salt_rounds))
+    if (!Object.values(Role).includes(payload.role!)) {
+        throw new AppError(status.BAD_REQUEST, "Invalid role")
+    }
+
+    const hashedPassword = await hashPassword(payload.password)
 
     const result = await prisma.user.create({
         data: {
             ...payload,
             password: hashedPassword,
         },
-        omit: { password: true }
+        omit: { password: true },
     })
 
     return result
@@ -66,6 +68,7 @@ const updateUserById = async (id: string, payload: IUpdateUserPayload) => {
         },
         omit: { password: true }
     })
+
     if (!result) {
         throw new AppError(status.NOT_FOUND, "Failed to update user, check your id and try again")
     }
@@ -87,6 +90,5 @@ const deleteUserById = async (id: string) => {
     })
     return true
 }
-
 
 export const userService = { getAllUsers, getUserById, createUser, updateUserById, deleteUserById }

@@ -1,4 +1,10 @@
 enum Role {
-    USER
+    CUSTOMER
+    TECHNICIAN
     ADMIN
+}
+
+enum UserStatus {
+    ACTIVE
+    BAN
 }

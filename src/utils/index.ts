@@ -1,5 +1,7 @@
 import type { NextFunction, RequestHandler, Response, Request } from "express";
 import type { TResponseHandler } from "../types";
+import bcrypt from 'bcrypt'
+import config from "../config";
 
 export class AppError extends Error {
     code: number;
@@ -29,4 +31,8 @@ export const catchAsync = (fn: RequestHandler) => {
             next(error)
         }
     }
+}
+
+export const hashPassword = async (password: string) => {
+    return await bcrypt.hash(password, Number(config.bcrypt_salt_rounds))
 }
