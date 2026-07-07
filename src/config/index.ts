@@ -8,5 +8,6 @@ export default {
     port: process.env.PORT || 3000,
     app_url: process.env.APP_URL,
     node_env: process.env.NODE_ENV,
-    bcrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS!
+    bcrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS!,
+    jwt_access_secret: process.env.JWT_ACCESS_SECRET!
 }

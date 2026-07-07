@@ -2,6 +2,7 @@ import type { NextFunction, RequestHandler, Response, Request } from "express";
 import type { TResponseHandler } from "../types";
 import bcrypt from 'bcrypt'
 import config from "../config";
+import jwt, { type JwtPayload } from 'jsonwebtoken'
 
 export class AppError extends Error {
     code: number;
@@ -33,6 +34,34 @@ export const catchAsync = (fn: RequestHandler) => {
     }
 }
 
+// Password Hashing 
+
 export const hashPassword = async (password: string) => {
     return await bcrypt.hash(password, Number(config.bcrypt_salt_rounds))
+}
+
+export const verifyPassword = async (password: string, hashedPassword: string) => {
+    return await bcrypt.compare(password, hashedPassword)
+}
+
+// JWT token
+
+export const signToken = (payload: JwtPayload) => {
+    return jwt.sign(payload, config.jwt_access_secret)
+}
+
+export const verifyToken = (token: string) => {
+    try {
+        const payload = jwt.verify(token, config.jwt_access_secret)
+        return {
+            success: true,
+            data: payload
+        }
+    } catch (error: any) {
+        console.log("Token verification failed", error)
+        return {
+            success: false,
+            error: error.message
+        }
+    }
 }
