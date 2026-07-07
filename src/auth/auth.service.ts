@@ -10,7 +10,7 @@ interface ILoginPayload {
 const loginUserIntoDB = async (payload: ILoginPayload) => {
     const { email, password } = payload
 
-    const user = await prisma.user.findUnique({
+    const user = await prisma.customer.findUnique({
         where: { email },
         omit: {
             photo_url: true,
@@ -29,12 +29,14 @@ const loginUserIntoDB = async (payload: ILoginPayload) => {
         throw new AppError(status.BAD_REQUEST, "Invalid Password")
     }
 
+
     const jwtPayload = {
         user_id: user.id,
         email,
         role: user.role,
         user_status: user.user_status
     }
+    console.log(jwtPayload.role)
 
     const accessToken = signToken(jwtPayload)
 

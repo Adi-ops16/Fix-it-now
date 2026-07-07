@@ -25,7 +25,7 @@ const getAllCustomers = catchAsync(async (req, res, next) => {
 })
 
 const getCustomerById = catchAsync(async (req, res, next) => {
-    const id = req.params.id as string
+    const id = req.user?.id as string
     const result = await customerService.getCustomerById(id)
 
     sendResponse(res, {

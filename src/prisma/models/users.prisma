@@ -1,4 +1,4 @@
-model User {
+model Customer {
     id          String     @id @default(uuid())
     name        String     @db.VarChar(255)
     email       String     @unique @db.VarChar(255)
@@ -12,5 +12,5 @@ model User {
     technician_profile TechnicianProfile?
 
     @@index([email])
-    @@map("users")
+    @@map("customers")
 }

@@ -3,6 +3,7 @@ import type { Role, UserStatus } from "../prisma/generated/prisma/enums";
 import { AppError, verifyToken } from "../utils";
 import status from "http-status";
 import { prisma } from "../lib/prisma";
+import type { JwtPayload } from "../types";
 
 declare global {
     namespace Express {
@@ -15,13 +16,6 @@ declare global {
             }
         }
     }
-}
-
-interface JwtPayload {
-    user_id: string;
-    email: string;
-    role: Role;
-    user_status: UserStatus;
 }
 
 const auth = (...roles: Role[]) => {
@@ -37,12 +31,12 @@ const auth = (...roles: Role[]) => {
             throw new AppError(status.UNAUTHORIZED, "Invalid access token");
         }
 
-        const { email, role, user_status, user_id } = isVerified.data as JwtPayload
+        const { email, role, user_id } = isVerified.data as JwtPayload
         if (!roles.includes(role)) {
             throw new AppError(status.FORBIDDEN, "You are not authorized to access this resource");
         }
 
-        const user = await prisma.user.findUnique({
+        const user = await prisma.customer.findUnique({
             where: {
                 id: user_id,
                 email

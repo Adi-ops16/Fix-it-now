@@ -7,7 +7,7 @@ import { Role } from "../prisma/generated/prisma/enums";
 const router = Router()
 
 router.get('/', auth(Role.ADMIN), customerController.getAllCustomers)
-router.get('/:id', customerController.getCustomerById)
+router.get('/me',auth("ADMIN","CUSTOMER","TECHNICIAN"), customerController.getCustomerById)
 router.post('/', customerController.createCustomer)
 router.patch('/:id', customerController.updateCustomerById)
 router.delete('/:id', customerController.deleteCustomerById)

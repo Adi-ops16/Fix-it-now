@@ -5,10 +5,10 @@ import config from "../config";
 import jwt, { type JwtPayload } from 'jsonwebtoken'
 
 export class AppError extends Error {
-    code: number;
+    statusCode: number;
     constructor(code: number, message: string) {
         super(message);
-        this.code = code;
+        this.statusCode = code;
 
         Object.setPrototypeOf(this, AppError.prototype);
         Error.captureStackTrace(this, this.constructor);

@@ -1,5 +1,5 @@
 model TechnicianProfile {
-    id              String   @id @default(uuid())
+    user_id         String   @id
     bio             String
     experience_year Int
     hourly_rate     Int
@@ -7,9 +7,7 @@ model TechnicianProfile {
     created_at      DateTime @default(now())
     updated_at      DateTime @default(now()) @updatedAt
 
-    user_id String @unique
-    user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
+    customer    Customer      @relation(fields: [user_id], references: [id], onDelete: Cascade)
     service Service[]
 
     @@map("technician_profiles")

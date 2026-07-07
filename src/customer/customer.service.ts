@@ -4,7 +4,7 @@ import type { ICreateCustomerPayload, IUpdateCustomerPayload } from "../types"
 import { AppError, hashPassword } from "../utils"
 
 const getAllCustomers = async () => {
-    const result = await prisma.user.findMany({
+    const result = await prisma.customer.findMany({
         omit: { password: true }
     })
 
@@ -12,7 +12,7 @@ const getAllCustomers = async () => {
 }
 
 const createCustomer = async (payload: ICreateCustomerPayload) => {
-    const isCustomerExist = await prisma.user.findUnique({
+    const isCustomerExist = await prisma.customer.findUnique({
         where: { email: payload.email }
     })
 
@@ -22,7 +22,7 @@ const createCustomer = async (payload: ICreateCustomerPayload) => {
 
     const hashedPassword = await hashPassword(payload.password)
 
-    const result = await prisma.user.create({
+    const result = await prisma.customer.create({
         data: {
             ...payload,
             password: hashedPassword,
@@ -35,9 +35,12 @@ const createCustomer = async (payload: ICreateCustomerPayload) => {
 
 const getCustomerById = async (id: string) => {
 
-    const result = await prisma.user.findUnique({
+    const result = await prisma.customer.findUnique({
         where: { id },
-        omit: { password: true }
+        omit: { password: true },
+        include: {
+            technician_profile: true
+        }
     })
 
     if (!result) {
@@ -50,7 +53,7 @@ const getCustomerById = async (id: string) => {
 const updateCustomerById = async (id: string, payload: IUpdateCustomerPayload) => {
     const { name, photo_url } = payload
 
-    const result = await prisma.user.update({
+    const result = await prisma.customer.update({
         where: { id },
         data: {
             ...(name !== undefined && { name }),
@@ -67,7 +70,7 @@ const updateCustomerById = async (id: string, payload: IUpdateCustomerPayload) =
 }
 
 const deleteCustomerById = async (id: string) => {
-    const customer = await prisma.user.findUnique({
+    const customer = await prisma.customer.findUnique({
         where: { id }
     })
 
@@ -75,7 +78,7 @@ const deleteCustomerById = async (id: string) => {
         throw new AppError(status.NOT_FOUND, "Customer not found, check your id and try again")
     }
 
-    await prisma.user.delete({
+    await prisma.customer.delete({
         where: { id }
     })
     return true
