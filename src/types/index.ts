@@ -15,6 +15,11 @@ export type {
     TUpdateCategoryPayload
 } from '../schemas/category.schema'
 
+export type {
+    TCreateServicePayload,
+    TUpdateServicePayload
+} from '../schemas/service.schema'
+
 export interface JwtPayload {
     user_id: string;
     email: string;

@@ -36,7 +36,6 @@ const loginUserIntoDB = async (payload: ILoginPayload) => {
         role: user.role,
         user_status: user.user_status
     }
-    console.log(jwtPayload.role)
 
     const accessToken = signToken(jwtPayload)
 

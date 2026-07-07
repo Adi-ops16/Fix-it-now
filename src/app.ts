@@ -8,6 +8,8 @@ import globalErrorHandler from './middlewares/globalErrorHandler';
 import { customerRoutes } from './customer/customer.route';
 import { technicianRoutes } from './technician/technician.route';
 import { categoryRoutes } from './category/category.route';
+import { serviceRoutes } from './service/service.route';
+import { notFound } from './middlewares/notFound';
 
 const app: Application = express();
 
@@ -31,7 +33,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/customers', customerRoutes)
 app.use('/api/technician', technicianRoutes)
 app.use('/api/categories', categoryRoutes)
+app.use('/api/services', serviceRoutes)
 
 app.use(globalErrorHandler);
+app.use(notFound)
 
 export default app;
