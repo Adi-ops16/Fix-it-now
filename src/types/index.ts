@@ -10,6 +10,11 @@ export type {
     IUpdateTechnicianPayload
 } from '../schemas/technician.schema'
 
+export type {
+    TCreateCategoryPayload,
+    TUpdateCategoryPayload
+} from '../schemas/category.schema'
+
 export interface JwtPayload {
     user_id: string;
     email: string;

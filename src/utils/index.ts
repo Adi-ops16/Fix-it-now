@@ -65,3 +65,11 @@ export const verifyToken = (token: string) => {
         }
     }
 }
+
+// remove undefined from object
+
+export const removeUndefined = <T extends Object>(payload: T) => {
+    return Object.fromEntries(
+        Object.entries(payload).filter(([, val]) => val !== undefined)
+    )
+}

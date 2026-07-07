@@ -1,7 +1,7 @@
 import status from "http-status"
 import { prisma } from "../lib/prisma"
 import type { ICreateTechnicianPayload, IUpdateCustomerPayload, IUpdateTechnicianPayload } from "../types"
-import { AppError } from "../utils"
+import { AppError, removeUndefined } from "../utils"
 
 const getAllTechnicians = async () => {
     const result = await prisma.technicianProfile.findMany({
@@ -67,9 +67,7 @@ const createTechnician = async (user_id: string, payload: ICreateTechnicianPaylo
 }
 
 const technicianProfileUpdate = async (user_id: string, payload: IUpdateTechnicianPayload) => {
-    const data = Object.fromEntries(
-        Object.entries(payload).filter(([, val]) => val !== undefined)
-    )
+    const data = removeUndefined(payload)
 
     const result = await prisma.technicianProfile.update({
         where: { user_id },

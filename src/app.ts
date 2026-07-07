@@ -7,7 +7,7 @@ import { sendResponse } from './utils';
 import globalErrorHandler from './middlewares/globalErrorHandler';
 import { customerRoutes } from './customer/customer.route';
 import { technicianRoutes } from './technician/technician.route';
-import { categoryRoutes } from './category/category.service';
+import { categoryRoutes } from './category/category.route';
 
 const app: Application = express();
 

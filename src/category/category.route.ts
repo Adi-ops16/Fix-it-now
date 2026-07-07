@@ -1,9 +1,11 @@
 import { Router } from "express";
-import app from "../app";
 import { categoryController } from "./category.controller";
 
 const router = Router()
 
-app.post('/', categoryController.postCategory)
+router.get('/', categoryController.getCategories)
+router.post('/', categoryController.postCategory)
+router.patch('/:id', categoryController.updateCategory)
+router.delete('/:id', categoryController.deleteCategory)
 
 export const categoryRoutes = router
