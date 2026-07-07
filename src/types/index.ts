@@ -1,16 +1,8 @@
-import type { Role } from "../prisma/generated/prisma/enums";
+export type {
+    ICreateCustomerPayload,
+    IUpdateCustomerPayload
+} from "../schemas/customer.schema";
 
-export interface ICreateUserPayload {
-    name: string;
-    email: string;
-    password: string;
-    role?: Role;
-    photo_url?: string
-}
-
-export interface IUpdateUserPayload extends Partial<
-    Omit<Omit<ICreateUserPayload, "password">, "email">
-> { }
 
 export type TResponseHandler<T> = {
     success?: boolean;
