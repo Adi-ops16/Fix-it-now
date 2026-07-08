@@ -1,13 +1,13 @@
 import type { Role, UserStatus } from "../prisma/generated/prisma/enums";
 
 export type {
-    ICreateCustomerPayload,
-    IUpdateCustomerPayload
+    TCreateCustomerPayload,
+    TUpdateCustomerPayload
 } from "../schemas/customer.schema";
 
 export type {
-    ICreateTechnicianPayload,
-    IUpdateTechnicianPayload
+    TCreateTechnicianPayload,
+    TUpdateTechnicianPayload
 } from '../schemas/technician.schema'
 
 export type {

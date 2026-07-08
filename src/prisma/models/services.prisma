@@ -13,5 +13,7 @@ model Service {
     category_id Int
     category    Categories @relation(fields: [category_id], references: [id], onDelete: Cascade)
 
+    bookings Booking[]
+
     @@map("services")
 }

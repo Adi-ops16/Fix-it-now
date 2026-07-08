@@ -1,0 +1,15 @@
+model TechnicianAvailability {
+    id            Int      @id @default(autoincrement())
+    technician_id String
+    weekday       Weekdays
+    start_time    String?
+    end_time      String?
+
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
+
+    technician Customer @relation(fields: [technician_id], references: [id], onDelete: Cascade)
+
+    @@unique([technician_id, weekday])
+    @@map("technician_availability")
+}

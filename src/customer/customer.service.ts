@@ -1,6 +1,6 @@
 import status from "http-status"
 import { prisma } from "../lib/prisma"
-import type { ICreateCustomerPayload, IUpdateCustomerPayload } from "../types"
+import type { TCreateCustomerPayload, TUpdateCustomerPayload } from "../types"
 import { AppError, hashPassword } from "../utils"
 
 const getAllCustomers = async () => {
@@ -11,7 +11,7 @@ const getAllCustomers = async () => {
     return result
 }
 
-const createCustomer = async (payload: ICreateCustomerPayload) => {
+const createCustomer = async (payload: TCreateCustomerPayload) => {
     const isCustomerExist = await prisma.customer.findUnique({
         where: { email: payload.email }
     })
@@ -50,7 +50,7 @@ const getCustomerById = async (id: string) => {
     return result
 }
 
-const updateCustomerById = async (id: string, payload: IUpdateCustomerPayload) => {
+const updateCustomerById = async (id: string, payload: TUpdateCustomerPayload) => {
     const { name, photo_url } = payload
 
     const result = await prisma.customer.update({

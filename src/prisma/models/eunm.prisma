@@ -7,4 +7,25 @@ enum Role {
 enum UserStatus {
     ACTIVE
     BAN
+    DEACTIVATED
+}
+
+enum Weekdays {
+    SATURDAY
+    SUNDAY
+    MONDAY
+    TUESDAY
+    WEDNESDAY
+    THURSDAY
+    FRIDAY
+}
+
+enum BookingStatus {
+    REQUESTED
+    ACCEPTED
+    DECLINED
+    PAID
+    IN_PROGRESS
+    COMPLETED
+    CANCELLED
 }

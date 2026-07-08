@@ -4,11 +4,13 @@ model TechnicianProfile {
     experience_year Int
     hourly_rate     Int
     location        String   @db.VarChar(100)
+    is_available    Boolean  @default(true)
     created_at      DateTime @default(now())
     updated_at      DateTime @default(now()) @updatedAt
 
-    customer    Customer      @relation(fields: [user_id], references: [id], onDelete: Cascade)
-    service Service[]
+    customer Customer  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    bookings Booking[]
+    service  Service[]
 
     @@map("technician_profiles")
 }

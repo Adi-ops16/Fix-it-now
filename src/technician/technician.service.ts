@@ -1,6 +1,6 @@
 import status from "http-status"
 import { prisma } from "../lib/prisma"
-import type { ICreateTechnicianPayload, IUpdateCustomerPayload, IUpdateTechnicianPayload } from "../types"
+import type { TCreateTechnicianPayload, TUpdateTechnicianPayload } from "../types"
 import { AppError, removeUndefined } from "../utils"
 
 const getAllTechnicians = async () => {
@@ -37,7 +37,7 @@ const getTechnicianProfile = async (id: string) => {
     return result
 }
 
-const createTechnician = async (user_id: string, payload: ICreateTechnicianPayload) => {
+const createTechnician = async (user_id: string, payload: TCreateTechnicianPayload) => {
     const result = await prisma.$transaction(async (tx) => {
 
         await tx.customer.update({
@@ -66,7 +66,7 @@ const createTechnician = async (user_id: string, payload: ICreateTechnicianPaylo
     return result
 }
 
-const technicianProfileUpdate = async (user_id: string, payload: IUpdateTechnicianPayload) => {
+const technicianProfileUpdate = async (user_id: string, payload: TUpdateTechnicianPayload) => {
     const data = removeUndefined(payload)
 
     const result = await prisma.technicianProfile.update({

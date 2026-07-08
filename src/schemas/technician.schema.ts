@@ -5,6 +5,7 @@ export const createTechnicianSchema = z.object({
     experience_year: z.number().int().min(0, "Experience year must be a non-negative integer"),
     hourly_rate: z.number().int().min(0, "Hourly rate must be a non-negative integer"),
     location: z.string().min(1, "Location is required").max(100, "Location must be at most 100 characters"),
+    is_available: z.boolean().optional().default(true)
 })
 
 export const updateTechnicianSchema = createTechnicianSchema.partial().refine(
@@ -16,6 +17,6 @@ export const updateTechnicianSchema = createTechnicianSchema.partial().refine(
 
 
 // Infer types from schemas
-export type ICreateTechnicianPayload = z.infer<typeof createTechnicianSchema>
+export type TCreateTechnicianPayload = z.infer<typeof createTechnicianSchema>
 
-export type IUpdateTechnicianPayload = z.infer<typeof updateTechnicianSchema>
+export type TUpdateTechnicianPayload = z.infer<typeof updateTechnicianSchema>

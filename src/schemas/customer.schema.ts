@@ -20,6 +20,6 @@ export const updateCustomerSchema = z.object({
 });
 
 // Infer types from schemas
-export type ICreateCustomerPayload = z.infer<typeof createCustomerSchema>;
+export type TCreateCustomerPayload = z.infer<typeof createCustomerSchema>;
 
-export type IUpdateCustomerPayload = z.infer<typeof updateCustomerSchema>;
+export type TUpdateCustomerPayload = z.infer<typeof updateCustomerSchema>;
