@@ -73,3 +73,12 @@ export const removeUndefined = <T extends Object>(payload: T) => {
         Object.entries(payload).filter(([, val]) => val !== undefined)
     )
 }
+
+// time to minute helper
+export const timeToMinutes = (timeStr: string) => {
+    const parts = timeStr.split(':').map(Number);
+    const hours = parts[0]!
+    const minutes = parts[1]!
+
+    return (hours * 60 + minutes);
+};

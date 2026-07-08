@@ -10,7 +10,6 @@ model Customer {
     updated_at  DateTime   @default(now()) @updatedAt
 
     technician_profile      TechnicianProfile?
-    technician_availability TechnicianAvailability[]
     bookings                Booking[]
 
     @@index([email])

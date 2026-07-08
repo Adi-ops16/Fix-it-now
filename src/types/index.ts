@@ -20,6 +20,10 @@ export type {
     TUpdateServicePayload
 } from '../schemas/service.schema'
 
+export type {
+    TCreateAvailabilityPayload
+} from '../schemas/availability.schema'
+
 export interface JwtPayload {
     user_id: string;
     email: string;

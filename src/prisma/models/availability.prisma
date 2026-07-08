@@ -8,7 +8,7 @@ model TechnicianAvailability {
     created_at DateTime @default(now())
     updated_at DateTime @default(now()) @updatedAt
 
-    technician Customer @relation(fields: [technician_id], references: [id], onDelete: Cascade)
+    technician TechnicianProfile @relation(fields: [technician_id], references: [user_id], onDelete: Cascade)
 
     @@unique([technician_id, weekday])
     @@map("technician_availability")

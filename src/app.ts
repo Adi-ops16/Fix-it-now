@@ -10,6 +10,7 @@ import { technicianRoutes } from './technician/technician.route';
 import { categoryRoutes } from './category/category.route';
 import { serviceRoutes } from './service/service.route';
 import { notFound } from './middlewares/notFound';
+import { availabilityRoutes } from './availability/availability.route';
 
 const app: Application = express();
 
@@ -31,6 +32,7 @@ app.get('/', (req, res: Response) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/customers', customerRoutes)
+app.use('/api/technician/availability', availabilityRoutes)
 app.use('/api/technician', technicianRoutes)
 app.use('/api/categories', categoryRoutes)
 app.use('/api/services', serviceRoutes)

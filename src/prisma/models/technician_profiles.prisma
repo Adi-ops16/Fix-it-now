@@ -8,9 +8,11 @@ model TechnicianProfile {
     created_at      DateTime @default(now())
     updated_at      DateTime @default(now()) @updatedAt
 
-    customer Customer  @relation(fields: [user_id], references: [id], onDelete: Cascade)
-    bookings Booking[]
-    service  Service[]
+    customer     Customer                 @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    
+    availability TechnicianAvailability[]
+    bookings     Booking[]
+    service      Service[]
 
     @@map("technician_profiles")
 }
