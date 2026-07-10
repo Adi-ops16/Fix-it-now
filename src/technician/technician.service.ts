@@ -1,27 +1,68 @@
 import status from "http-status"
 import { prisma } from "../lib/prisma"
-import type { TCreateTechnicianPayload, TUpdateTechnicianPayload } from "../types"
+import type { IQuery, TCreateTechnicianPayload, TUpdateTechnicianPayload } from "../types"
 import { AppError, removeUndefined } from "../utils"
+import type { TechnicianProfileWhereInput } from "../prisma/generated/prisma/models"
 
-const getAllTechnicians = async () => {
-    const result = await prisma.technicianProfile.findMany({
-        include: {
-            customer: {
-                omit: {
-                    password: true,
-                    updated_at: true,
-                    created_at: true,
-                    id: true
-                }
+const getAllTechnicians = async (query: IQuery) => {
+    const limit = query.limit ? Number(query.limit) : 10
+    const page = query.page ? Number(query.page) : 1
+    const skip = (page - 1) * limit
+    const sortBy = query.sortBy || "created_at"
+    const sortOrder = query.sortOrder === "asc" ? "asc" : "desc"
+
+    const andConditions: TechnicianProfileWhereInput[] = []
+
+    if (query.location) {
+        andConditions.push({
+            location: {
+                contains: query.location,
+                mode: "insensitive"
             }
-        },
-        omit: {
-            created_at: true,
-            updated_at: true
-        }
-    })
+        })
+    }
 
-    return result
+    const [technicians, total] = await Promise.all([
+        prisma.technicianProfile.findMany({
+            where: {
+                AND: andConditions
+            },
+            include: {
+                customer: {
+                    omit: {
+                        password: true,
+                        updated_at: true,
+                        created_at: true,
+                        id: true
+                    }
+                }
+            },
+            omit: {
+                created_at: true,
+                updated_at: true
+            },
+            orderBy: {
+                [sortBy]: sortOrder
+            },
+            take: limit,
+            skip: skip
+        }),
+        prisma.technicianProfile.count({
+            where: {
+                AND: andConditions
+            }
+        })
+    ])
+
+    return {
+        meta: {
+            page,
+            limit,
+            totalDataCount: total,
+            totalPages: Math.ceil(total / limit)
+        },
+        data: technicians
+    }
 }
 
 const getTechnicianProfile = async (id: string) => {

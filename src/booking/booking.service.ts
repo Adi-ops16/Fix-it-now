@@ -42,9 +42,10 @@ const getAllBookings = async (query: IQuery) => {
     return {
         data: result,
         meta: {
+            page,
             limit,
             totalDataCount: total,
-            totalPage: Math.ceil(total / limit)
+            totalPages: Math.ceil(total / limit)
         }
     }
 }

@@ -1,14 +1,40 @@
 import status from "http-status"
 import { prisma } from "../lib/prisma"
-import type { TCreateCustomerPayload, TUpdateCustomerPayload } from "../types"
+import type { IQuery, TCreateCustomerPayload, TUpdateCustomerPayload } from "../types"
 import { AppError, hashPassword } from "../utils"
+import type { CustomerWhereInput } from "../prisma/generated/prisma/models"
+import type { UserStatus } from "../prisma/generated/prisma/enums"
 
-const getAllCustomers = async () => {
+const getAllCustomers = async (query: IQuery) => {
+
+    const limit = query.limit ? Number(query.limit) : 10
+    const page = query.page ? Number(query.page) : 1
+    const skip = (page - 1) * limit
+    const sortOrder = query.sortOrder ? query.sortOrder : "desc"
+
+    const whereCondition: CustomerWhereInput = {}
+    if (query.user_status) {
+        whereCondition.user_status = query.user_status
+    }
+
     const result = await prisma.customer.findMany({
-        omit: { password: true }
+        omit: { password: true },
+        orderBy: { created_at: sortOrder },
+        take: limit,
+        skip: skip
     })
 
-    return result
+    const total = await prisma.customer.count({ where: whereCondition })
+
+    return {
+        data: result,
+        meta: {
+            page,
+            limit,
+            totalDataCount: total,
+            totalPages: Math.ceil(total / limit)
+        }
+    }
 }
 
 const createCustomer = async (payload: TCreateCustomerPayload) => {
@@ -84,4 +110,16 @@ const deleteCustomerById = async (id: string) => {
     return true
 }
 
-export const customerService = { getAllCustomers, getCustomerById, createCustomer, updateCustomerById, deleteCustomerById }
+const manageCustomers = async (userId: string, status: UserStatus) => {
+    const result = await prisma.customer.update({
+        where: { id: userId },
+        data: {
+            user_status: status
+        },
+        omit: { password: true }
+    })
+
+    return result
+}
+
+export const customerService = { getAllCustomers, getCustomerById, createCustomer, updateCustomerById, deleteCustomerById, manageCustomers }

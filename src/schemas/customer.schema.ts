@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { UserStatus } from '../prisma/generated/prisma/enums';
 
 export const createCustomerSchema = z.object({
     name: z.string()
@@ -19,7 +20,19 @@ export const updateCustomerSchema = z.object({
     photo_url: z.string().optional()
 });
 
+export const manageCustomersSchema = z.object({
+    userStatus: z.enum(UserStatus, {
+        error: "status must be a valid enum"
+    }),
+    userId: z.uuid({
+        error: "user_id must be a valid uuid"
+    })
+})
+
 // Infer types from schemas
 export type TCreateCustomerPayload = z.infer<typeof createCustomerSchema>;
 
 export type TUpdateCustomerPayload = z.infer<typeof updateCustomerSchema>;
+
+export type TManageCustomerPayload = z.infer<typeof manageCustomersSchema>;
+

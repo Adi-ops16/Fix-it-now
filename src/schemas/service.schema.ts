@@ -6,6 +6,7 @@ export const createServiceSchema = z.object({
     price: z.number().min(1, "price must be greater than 0"),
     estimated_time: z.number().min(1, "estimated_time must be greater than 0"),
     category_id: z.number().min(1, "category_id is required"),
+    location: z.string().nullable().default(null)
 })
 
 export const updateServiceSchema = createServiceSchema.partial()

@@ -2,7 +2,8 @@ import type { BookingStatus, Role, UserStatus } from "../prisma/generated/prisma
 
 export type {
     TCreateCustomerPayload,
-    TUpdateCustomerPayload
+    TUpdateCustomerPayload,
+    TManageCustomerPayload
 } from "../schemas/customer.schema";
 
 export type {
@@ -40,14 +41,20 @@ export interface IQuery {
     searchTerms?: string;
     page?: string;
     limit?: string;
-    sortOrder?: "desc" | "asc",
-    booking_status?: BookingStatus
+    sortOrder?: "desc" | "asc";
+    booking_status?: BookingStatus;
+    user_status?: UserStatus;
+    category_id?: string;
+    technician_id?: string;
+    sortBy?: string;
+    location?: string
 }
 
 export type TMeta = {
-    totalPage: number;
+    totalPages: number;
     limit: number;
     totalDataCount: number;
+    page: number
 }
 
 export type TResponseHandler<T> = {

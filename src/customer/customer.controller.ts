@@ -1,7 +1,7 @@
 import status from "http-status";
 import { catchAsync, sendResponse } from "../utils";
 import { customerService } from "./customer.service";
-import { createCustomerSchema, updateCustomerSchema } from "../schemas/customer.schema";
+import { createCustomerSchema, manageCustomersSchema, updateCustomerSchema } from "../schemas/customer.schema";
 
 const createCustomer = catchAsync(async (req, res, next) => {
     const validatedData = createCustomerSchema.parse(req.body);
@@ -15,12 +15,14 @@ const createCustomer = catchAsync(async (req, res, next) => {
 })
 
 const getAllCustomers = catchAsync(async (req, res, next) => {
-    const result = await customerService.getAllCustomers()
+
+    const result = await customerService.getAllCustomers(req.query)
 
     sendResponse(res, {
         code: status.OK,
         message: "Customers fetched successfully",
-        data: result
+        data: result.data,
+        meta: result.meta
     })
 })
 
@@ -57,4 +59,15 @@ const deleteCustomerById = catchAsync(async (req, res, next) => {
     })
 })
 
-export const customerController = { getAllCustomers, getCustomerById, updateCustomerById, createCustomer, deleteCustomerById }
+const manageCustomers = catchAsync(async (req, res, next) => {
+    const { userId, userStatus } = manageCustomersSchema.parse(req.body)
+    const result = await customerService.manageCustomers(userId, userStatus)
+
+    sendResponse(res, {
+        code: status.OK,
+        message: `Customer ${userStatus} successfully`,
+        data: result
+    })
+})
+
+export const customerController = { getAllCustomers, getCustomerById, updateCustomerById, createCustomer, deleteCustomerById, manageCustomers }

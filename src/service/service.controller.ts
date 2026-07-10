@@ -4,12 +4,13 @@ import { catchAsync, sendResponse } from "../utils"
 import { serviceService } from "./service.service";
 
 const getAllServices = catchAsync(async (req, res, next) => {
-    const data = await serviceService.getAllServices()
+    const { data, meta } = await serviceService.getAllServices(req.query)
 
     sendResponse(res, {
         code: status.OK,
         message: "Services retrieved successfully",
-        data
+        data,
+        meta
     })
 
 })

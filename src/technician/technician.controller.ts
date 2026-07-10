@@ -4,12 +4,13 @@ import { technicianService } from "./technician.service";
 import { createTechnicianSchema, updateTechnicianSchema } from "../schemas/technician.schema";
 
 const getAllTechnicians = catchAsync(async (req, res, next) => {
-    const data = await technicianService.getAllTechnicians()
+    const { data, meta } = await technicianService.getAllTechnicians(req.query)
 
     sendResponse(res, {
         code: status.OK,
         message: "Technicians data retrieved successfully",
-        data
+        data,
+        meta
     })
 })
 
