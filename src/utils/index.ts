@@ -74,7 +74,7 @@ export const removeUndefined = <T extends Object>(payload: T) => {
     )
 }
 
-// time to minute helper
+// time helpers
 export const timeToMinutes = (timeStr: string) => {
     const parts = timeStr.split(':').map(Number);
     const hours = parts[0]!
@@ -82,3 +82,22 @@ export const timeToMinutes = (timeStr: string) => {
 
     return (hours * 60 + minutes);
 };
+
+// date -> "YYYY-MM-DD" & time -> "HH:mm" (format)
+export const combineDateTime = (date: Date, time: string) => {
+    const dateCopy = new Date(date)
+    const timeArray = time.split(":").map(Number);
+
+    const hours = timeArray[0]!
+    const minutes = timeArray[1]!
+    dateCopy.setHours(hours, minutes, 0, 0);
+    
+    return dateCopy
+}
+
+export const getEndTime = (startTime: Date, estimatedTime: number) => {
+    const end_time = new Date(startTime)
+    end_time.setMinutes(startTime.getMinutes() + estimatedTime)
+
+    return end_time
+}

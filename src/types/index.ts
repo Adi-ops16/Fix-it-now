@@ -24,6 +24,11 @@ export type {
     TCreateAvailabilityPayload
 } from '../schemas/availability.schema'
 
+export type {
+    TCreateBookingPayload,
+    TUpdateBookingStatusPayload
+} from '../schemas/booking.schema'
+
 export interface JwtPayload {
     user_id: string;
     email: string;
