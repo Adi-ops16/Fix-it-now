@@ -1,13 +1,12 @@
 model Payment {
     id             String        @id @default(uuid())
     booking_id     String
-    amount         Float 
-    currency       String        @default("bdt")
+    amount         Float
+    currency       String        @default("usd")
     payment_status PaymentStatus @default(PENDING)
 
     stripe_session_id String? @unique
-    stripe_intent_id  String  @unique
-    receipt_url       String?
+    stripe_intent_id  String?  @unique
 
     // Relations
     booking Booking @relation(fields: [booking_id], references: [id], onDelete: Cascade)
