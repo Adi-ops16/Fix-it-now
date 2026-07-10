@@ -28,6 +28,18 @@ const handleWebhook = catchAsync(async (req, res, next) => {
     })
 })
 
+const getMyPayments = catchAsync(async (req, res, next) => {
+    const user_id = req.user?.id!
+    const role = req.user?.role!
+    const result = await paymentService.getMyPayments(user_id, role, req.query)
+
+    sendResponse(res, {
+        code: status.OK,
+        message: "Payment history retrieved",
+        data: result
+    })
+})
+
 const paymentSuccess = catchAsync(async (req, res, next) => {
     res.status(200).json({
         success: true,
@@ -44,4 +56,4 @@ const paymentCancel = catchAsync(async (req, res, next) => {
     })
 })
 
-export const paymentController = { paymentSuccess, paymentCancel, createCheckout, handleWebhook }
+export const paymentController = { getMyPayments, paymentSuccess, paymentCancel, createCheckout, handleWebhook }

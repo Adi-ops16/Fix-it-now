@@ -5,6 +5,13 @@ import { stripe } from "../lib/stripe"
 import { AppError } from "../utils"
 import type Stripe from "stripe"
 import { handlePaymentExpire, handlePaymentSuccess } from "../utils/payment"
+import type { Role } from "../prisma/generated/prisma/enums"
+import type { IQuery } from "../types"
+
+interface IWhereConditions {
+    customer_id?: string;
+    technician_id?: string
+}
 
 const createCheckout = async (userId: string, booking_id: string) => {
     const booking = await prisma.booking.findFirst({
@@ -83,4 +90,22 @@ const handleWebhook = async (payload: Buffer, signature: string) => {
     }
 }
 
-export const paymentService = { createCheckout, handleWebhook }
+const getMyPayments = async (user_id: string, role: Role, query: IQuery) => {
+    const whereCondition: IWhereConditions = {}
+    const sortOrder = query.sortOrder ? query.sortOrder : "desc"
+
+    if (role === "TECHNICIAN") {
+        whereCondition.technician_id = user_id
+    } else {
+        whereCondition.customer_id = user_id
+    }
+
+    const result = await prisma.payment.findMany({
+        where: whereCondition,
+        orderBy: { created_at: sortOrder }
+    })
+
+    return result
+}
+
+export const paymentService = { getMyPayments, createCheckout, handleWebhook }

@@ -36,6 +36,13 @@ export interface JwtPayload {
     user_status: UserStatus;
 }
 
+export interface IQuery {
+    searchTerms?: string;
+    page?: string;
+    limit?: string;
+    sortOrder?: "desc" | "asc"
+}
+
 export type TResponseHandler<T> = {
     success?: boolean;
     code: number;

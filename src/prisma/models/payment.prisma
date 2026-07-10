@@ -5,8 +5,10 @@ model Payment {
     currency       String        @default("usd")
     payment_status PaymentStatus @default(PENDING)
 
+    customer_id       String
+    technician_id     String
     stripe_session_id String? @unique
-    stripe_intent_id  String?  @unique
+    stripe_intent_id  String? @unique
 
     // Relations
     booking Booking @relation(fields: [booking_id], references: [id], onDelete: Cascade)
