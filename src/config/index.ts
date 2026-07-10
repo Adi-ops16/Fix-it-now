@@ -9,5 +9,7 @@ export default {
     app_url: process.env.APP_URL,
     node_env: process.env.NODE_ENV,
     bcrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS!,
-    jwt_access_secret: process.env.JWT_ACCESS_SECRET!
+    jwt_access_secret: process.env.JWT_ACCESS_SECRET!,
+    jwt_access_time: process.env.JWT_ACCESS_TIME!,
+    stripe_secret: process.env.STRIPE_SECRET!
 }

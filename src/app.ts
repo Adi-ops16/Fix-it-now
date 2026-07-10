@@ -12,6 +12,7 @@ import { serviceRoutes } from './service/service.route';
 import { notFound } from './middlewares/notFound';
 import { availabilityRoutes } from './availability/availability.route';
 import { bookingRoutes } from './booking/booking.route';
+import { paymentRoutes } from './payment/payment.route';
 
 const app: Application = express();
 
@@ -38,6 +39,7 @@ app.use('/api/technician', technicianRoutes)
 app.use('/api/categories', categoryRoutes)
 app.use('/api/services', serviceRoutes)
 app.use('/api/bookings', bookingRoutes)
+app.use('/api/payment', paymentRoutes)
 
 app.use(globalErrorHandler);
 app.use(notFound)

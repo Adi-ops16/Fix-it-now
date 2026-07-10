@@ -2,7 +2,7 @@ import type { NextFunction, RequestHandler, Response, Request } from "express";
 import type { TResponseHandler } from "../types";
 import bcrypt from 'bcrypt'
 import config from "../config";
-import jwt, { type JwtPayload } from 'jsonwebtoken'
+import jwt, { type JwtPayload, type SignOptions } from 'jsonwebtoken'
 
 export class AppError extends Error {
     statusCode: number;
@@ -47,7 +47,7 @@ export const verifyPassword = async (password: string, hashedPassword: string) =
 // JWT token
 
 export const signToken = (payload: JwtPayload) => {
-    return jwt.sign(payload, config.jwt_access_secret)
+    return jwt.sign(payload, config.jwt_access_secret, { expiresIn: config.jwt_access_time } as SignOptions)
 }
 
 export const verifyToken = (token: string) => {
@@ -91,7 +91,7 @@ export const combineDateTime = (date: Date, time: string) => {
     const hours = timeArray[0]!
     const minutes = timeArray[1]!
     dateCopy.setHours(hours, minutes, 0, 0);
-    
+
     return dateCopy
 }
 
