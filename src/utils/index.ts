@@ -20,7 +20,8 @@ export const sendResponse = <T>(res: Response, data: TResponseHandler<T>) => {
     res.status(data.code).json({
         success: data.success || true,
         message: data.message,
-        data: data.data || null
+        data: data.data ?? undefined,
+        meta: data.meta ?? undefined
     });
 }
 

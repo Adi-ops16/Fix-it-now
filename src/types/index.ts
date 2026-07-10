@@ -1,4 +1,4 @@
-import type { Role, UserStatus } from "../prisma/generated/prisma/enums";
+import type { BookingStatus, Role, UserStatus } from "../prisma/generated/prisma/enums";
 
 export type {
     TCreateCustomerPayload,
@@ -40,7 +40,14 @@ export interface IQuery {
     searchTerms?: string;
     page?: string;
     limit?: string;
-    sortOrder?: "desc" | "asc"
+    sortOrder?: "desc" | "asc",
+    booking_status?: BookingStatus
+}
+
+export type TMeta = {
+    totalPage: number;
+    limit: number;
+    totalDataCount: number;
 }
 
 export type TResponseHandler<T> = {
@@ -48,4 +55,5 @@ export type TResponseHandler<T> = {
     code: number;
     message: string;
     data?: T;
+    meta?: TMeta
 }

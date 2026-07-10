@@ -6,6 +6,7 @@ const router = Router()
 
 router.get('/', auth("CUSTOMER", "TECHNICIAN"), bookingController.getMyBookings)
 router.get('/all', auth("ADMIN"), bookingController.getAllBookings)
+router.get('/:bookingId', auth("CUSTOMER"), bookingController.getBookingDetails)
 router.post('/', auth("CUSTOMER"), bookingController.createBooking)
 router.patch(
     '/status',

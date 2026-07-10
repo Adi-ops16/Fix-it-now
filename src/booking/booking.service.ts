@@ -1,8 +1,9 @@
 import status from "http-status"
 import { prisma } from "../lib/prisma"
-import type { TCreateBookingPayload, TUpdateBookingStatusPayload } from "../types"
+import type { IQuery, TCreateBookingPayload, TUpdateBookingStatusPayload } from "../types"
 import { AppError, combineDateTime, getEndTime } from "../utils"
 import type { Role, Weekdays } from "../prisma/generated/prisma/enums"
+import type { BookingWhereInput } from "../prisma/generated/prisma/models"
 
 const weekdays: Weekdays[] = [
     "SUNDAY",
@@ -19,15 +20,36 @@ interface IWhereConditions {
     technician_id?: string
 }
 
-const getAllBookings = async () => {
-    const result = await prisma.booking.findMany({
-        orderBy: { created_at: "desc" }
-    })
+const getAllBookings = async (query: IQuery) => {
+    const limit = query.limit ? Number(query.limit) : 10
+    const page = query.page ? Number(query.page) : 1
+    const skip = (page - 1) * limit
+    const sortOrder = query.sortOrder ? query.sortOrder : "desc"
 
-    return result
+    const whereCondition: BookingWhereInput = {}
+    if (query.booking_status) {
+        whereCondition.booking_status = query.booking_status
+    }
+
+    const result = await prisma.booking.findMany({
+        where: whereCondition,
+        orderBy: { created_at: sortOrder },
+        skip: skip,
+        take: limit,
+    })
+    const total = await prisma.booking.count({ where: whereCondition })
+
+    return {
+        data: result,
+        meta: {
+            limit,
+            totalDataCount: total,
+            totalPage: Math.ceil(total / limit)
+        }
+    }
 }
 
-const getMyBookings = async (userId: string, role: Role) => {
+const getMyBookings = async (userId: string, role: Role, query: IQuery) => {
     const whereCondition: IWhereConditions = {}
     if (role === "CUSTOMER") {
         whereCondition.customer_id = userId
@@ -35,8 +57,11 @@ const getMyBookings = async (userId: string, role: Role) => {
         whereCondition.technician_id = userId
     }
 
+    const sortOrder = query.sortOrder ? query.sortOrder : "desc"
+
     const result = await prisma.booking.findMany({
-        where: whereCondition
+        where: whereCondition,
+        orderBy: { created_at: sortOrder }
     })
 
     return result
@@ -169,4 +194,19 @@ const updateBookingStatus = async (userId: string, role: Role, payload: TUpdateB
     return result
 }
 
-export const bookingService = { getAllBookings, getMyBookings, createBooking, updateBookingStatus }
+const getBookingDetails = async (booking_id: string, customer_id: string) => {
+    const result = await prisma.booking.findUnique({
+        where: {
+            id: booking_id,
+            customer_id
+        },
+        include: {
+            technician: true,
+            payment: true,
+        }
+    })
+
+    return result
+}
+
+export const bookingService = { getAllBookings, getMyBookings, createBooking, updateBookingStatus, getBookingDetails }

@@ -4,19 +4,20 @@ import { catchAsync, sendResponse } from "../utils"
 import { bookingService } from "./booking.service"
 
 const getAllBookings = catchAsync(async (req, res, next) => {
-    const data = await bookingService.getAllBookings()
+    const data = await bookingService.getAllBookings(req.query)
 
     sendResponse(res, {
         code: status.OK,
         message: "Bookings retrieved successfully",
-        data
+        data: data.data,
+        meta: data.meta
     })
 })
 
 const getMyBookings = catchAsync(async (req, res, next) => {
     const userId = req.user?.id!
     const role = req.user?.role!
-    const data = await bookingService.getMyBookings(userId, role)
+    const data = await bookingService.getMyBookings(userId, role, req.query)
 
     sendResponse(res, {
         code: status.OK,
@@ -24,6 +25,19 @@ const getMyBookings = catchAsync(async (req, res, next) => {
         data
     })
 
+})
+
+const getBookingDetails = catchAsync(async (req, res, next) => {
+    const customer_id = req.user?.id!
+    const booking_id = req.params.bookingId as string
+
+    const result = await bookingService.getBookingDetails(booking_id, customer_id)
+
+    sendResponse(res, {
+        code: status.OK,
+        message: "Booking details retrieved successfully",
+        data: result
+    })
 })
 
 const createBooking = catchAsync(async (req, res, next) => {
@@ -51,4 +65,6 @@ const updateBookingStatus = catchAsync(async (req, res, next) => {
     })
 })
 
-export const bookingController = { getAllBookings, getMyBookings, createBooking, updateBookingStatus }
+
+
+export const bookingController = { getBookingDetails, getAllBookings, getMyBookings, createBooking, updateBookingStatus }
