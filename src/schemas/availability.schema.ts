@@ -3,14 +3,17 @@ import { Weekdays } from '../prisma/generated/prisma/enums';
 import { timeToMinutes } from '../utils';
 
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+const timeSchema = z.string().regex(timeRegex, {
+    message: 'Time must be in HH:mm format (e.g. 09:30).',
+});
 
 const technicianAvailabilitySchema = z
     .object({
         weekday: z.enum(Weekdays),
 
-        start_time: z.string().regex(timeRegex).nullable(),
+        start_time: timeSchema.nullable(),
 
-        end_time: z.string().regex(timeRegex).nullable(),
+        end_time: timeSchema.nullable(),
     })
     .refine(
         (data) =>

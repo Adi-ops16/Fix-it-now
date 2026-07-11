@@ -1,8 +1,16 @@
+import status from "http-status"
 import { prisma } from "../lib/prisma"
 import type { TCreateAvailabilityPayload } from "../types"
+import { AppError } from "../utils"
 
-const getAvailability = async () => {
-    const result = await prisma.technicianAvailability.findMany()
+const getAvailability = async (technician_id: string) => {
+    const result = await prisma.technicianAvailability.findMany({
+        where: { technician_id },
+    })
+
+    if (!result || result.length === 0) {
+        throw new AppError(status.NOT_FOUND, "No availability found for this technician")
+    }
 
     return result
 }

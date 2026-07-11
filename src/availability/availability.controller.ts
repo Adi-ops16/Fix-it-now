@@ -18,7 +18,8 @@ const setAvailability = catchAsync(async (req, res, next) => {
 })
 
 const getAvailability = catchAsync(async (req, res, next) => {
-    const result = await availabilityService.getAvailability()
+    const technician_id = req.user?.id as string
+    const result = await availabilityService.getAvailability(technician_id)
 
     sendResponse(res, {
         code: status.OK,
