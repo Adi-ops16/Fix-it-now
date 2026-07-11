@@ -3,7 +3,8 @@
 This project is a production-style service platform API for customers, technicians, bookings, payments, services, categories, availability, and reviews.
 
 ## Base URL
-- Local: https://fix-it-now-seven.vercel.app/
+- Local: https:localhost://PORT
+- Production: https://fix-it-now-seven.vercel.app/
 - API prefix: /api
 
 ## Authentication
