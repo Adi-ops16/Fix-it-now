@@ -30,6 +30,11 @@ export type {
     TUpdateBookingStatusPayload
 } from '../schemas/booking.schema'
 
+export type {
+    TCreateReviewPayload,
+    TUpdateReviewPayload
+} from '../schemas/review.schema'
+
 export interface JwtPayload {
     user_id: string;
     email: string;

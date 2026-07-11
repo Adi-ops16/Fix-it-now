@@ -156,7 +156,6 @@ const updateBookingStatus = async (userId: string, role: Role, payload: TUpdateB
     })
 
     // validations
-
     if (!booking) {
         throw new AppError(404, "Booking not found or unauthorized access");
     }

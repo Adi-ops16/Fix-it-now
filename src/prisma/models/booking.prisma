@@ -19,6 +19,7 @@ model Booking {
     technician TechnicianProfile @relation(fields: [technician_id], references: [user_id])
     service    Service           @relation(fields: [service_id], references: [id])
     payment    Payment[]
+    review     Review?
 
     created_at DateTime @default(now())
     updated_at DateTime @default(now()) @updatedAt

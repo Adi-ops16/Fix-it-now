@@ -9,10 +9,11 @@ import { customerRoutes } from './customer/customer.route';
 import { technicianRoutes } from './technician/technician.route';
 import { categoryRoutes } from './category/category.route';
 import { serviceRoutes } from './service/service.route';
+import { paymentRoutes } from './payment/payment.route';
+import { bookingRoutes } from './booking/booking.route';
 import { notFound } from './middlewares/notFound';
 import { availabilityRoutes } from './availability/availability.route';
-import { bookingRoutes } from './booking/booking.route';
-import { paymentRoutes } from './payment/payment.route';
+import { reviewRoutes } from './review/review.route';
 
 const app: Application = express();
 
@@ -44,6 +45,7 @@ app.use('/api/categories', categoryRoutes)
 app.use('/api/services', serviceRoutes)
 app.use('/api/bookings', bookingRoutes)
 app.use('/api/payment', paymentRoutes)
+app.use('/api/reviews', reviewRoutes)
 
 app.use(globalErrorHandler);
 app.use(notFound)

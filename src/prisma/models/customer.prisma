@@ -9,8 +9,9 @@ model Customer {
     created_at  DateTime   @default(now())
     updated_at  DateTime   @default(now()) @updatedAt
 
-    technician_profile      TechnicianProfile?
-    bookings                Booking[]
+    technician_profile TechnicianProfile?
+    bookings           Booking[]
+    review             Review[]
 
     @@index([email])
     @@map("customers")

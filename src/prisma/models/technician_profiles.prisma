@@ -8,11 +8,12 @@ model TechnicianProfile {
     created_at      DateTime @default(now())
     updated_at      DateTime @default(now()) @updatedAt
 
-    customer     Customer                 @relation(fields: [user_id], references: [id], onDelete: Cascade)
-    
+    customer Customer @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
     availability TechnicianAvailability[]
     bookings     Booking[]
     service      Service[]
+    reviews      Review[]
 
     @@map("technician_profiles")
 }
