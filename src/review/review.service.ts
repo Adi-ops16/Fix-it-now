@@ -100,11 +100,14 @@ const updateReview = async (customer_id: string, review_id: number, payload: TUp
         throw new AppError(status.NOT_FOUND, "Review not found or unauthorized");
     }
 
-    const data = removeUndefined(payload) as ReviewUpdateInput
+    const data = removeUndefined(payload)
 
     const result = await prisma.review.update({
         where: { id: review_id },
-        data: data
+        data: {
+            comment: data.comment,
+            rating: data.rating
+        }
     });
 
     return result;

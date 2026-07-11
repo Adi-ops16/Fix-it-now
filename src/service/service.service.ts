@@ -148,6 +148,50 @@ const getServiceById = async (id: number) => {
     }
 }
 
+const getMyServices = async (technician_id: string, query: IQuery) => {
+    const limit = query.limit ? Number(query.limit) : 10
+    const page = query.page ? Number(query.page) : 1
+    const skip = (page - 1) * limit
+    const sortBy = query.sortBy || "created_at"
+    const sortOrder = query.sortOrder === "asc" ? "asc" : "desc"
+
+    const [services, total] = await Promise.all([
+        prisma.service.findMany({
+            where: { technician_id },
+            include: {
+                category: true,
+                technician: {
+                    select: {
+                        user_id: true,
+                        experience_year: true,
+                        is_available: true,
+                        hourly_rate: true,
+                        location: true
+                    }
+                }
+            },
+            orderBy: {
+                [sortBy]: sortOrder
+            },
+            take: limit,
+            skip: skip
+        }),
+        prisma.service.count({
+            where: { technician_id }
+        })
+    ])
+
+    return {
+        meta: {
+            page,
+            limit,
+            totalDataCount: total,
+            totalPages: Math.ceil(total / limit)
+        },
+        data: services
+    }
+}
+
 const createService = async (technician_id: string, payload: TCreateServicePayload) => {
     const result = await prisma.service.create({
         data: {
@@ -200,4 +244,4 @@ const deleteServiceById = async (id: number, technician_id: string) => {
     return true
 }
 
-export const serviceService = { getAllServices, createService, getServiceById, updateServiceById, deleteServiceById }
+export const serviceService = { getAllServices, getMyServices, createService, getServiceById, updateServiceById, deleteServiceById }

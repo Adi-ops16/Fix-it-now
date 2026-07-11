@@ -26,6 +26,18 @@ const getServiceById = catchAsync(async (req, res, next) => {
     })
 })
 
+const getMyServices = catchAsync(async (req, res, next) => {
+    const technician_id = req.user?.id as string
+    const { data, meta } = await serviceService.getMyServices(technician_id, req.query)
+
+    sendResponse(res, {
+        code: status.OK,
+        message: "Your services retrieved successfully",
+        data,
+        meta
+    })
+})
+
 const createService = catchAsync(async (req, res, next) => {
     const technician_id = req.user?.id as string
     const validatedData = createServiceSchema.parse(req.body);
@@ -65,4 +77,4 @@ const deleteServiceById = catchAsync(async (req, res, next) => {
     })
 })
 
-export const serviceController = { getAllServices, getServiceById, createService, updateServiceById, deleteServiceById }
+export const serviceController = { getAllServices, getServiceById, getMyServices, createService, updateServiceById, deleteServiceById }

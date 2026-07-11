@@ -3,6 +3,7 @@ import { serviceController } from "./service.controller";
 import auth from "../middlewares/auth";
 
 const router = Router();
+router.get('/my-services', auth("TECHNICIAN"), serviceController.getMyServices)
 router.get('/', serviceController.getAllServices)
 router.get('/:serviceId', serviceController.getServiceById)
 router.post('/', auth("TECHNICIAN"), serviceController.createService)

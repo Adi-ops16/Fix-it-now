@@ -18,7 +18,10 @@ export const createBookingSchema = z.object({
 
     work_date: z.coerce.date({
         error: "Work date is required and must be a valid date. please provide the date in YYYY-MM-DD format.",
-    }),
+    }).refine((val) => val >= new Date(),
+        {
+            error: "Date cannot be in the past"
+        }),
 
     work_startTime: z.string().regex(timeRegex, {
         error: "Please provide an HH:mm format"
