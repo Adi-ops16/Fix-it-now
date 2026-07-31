@@ -1,9 +1,11 @@
 import status from "http-status";
 import { catchAsync, sendResponse } from "../utils";
 import { loginUserIntoDB } from "./auth.service";
+import { LoginSchema } from "../schemas/LoginSchema";
 
 const loginUser = catchAsync(async (req, res, next) => {
-    const result = await loginUserIntoDB(req.body);
+    const parsedData = LoginSchema.parse(req.body)
+    const result = await loginUserIntoDB(parsedData);
 
     res.cookie('accessToken', result.accessToken, {
         httpOnly: true,

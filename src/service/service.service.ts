@@ -50,17 +50,30 @@ const getAllServices = async (query: IQuery) => {
 
     if (query.location) {
         andConditions.push({
-            location: {
-                contains: query.location,
-                mode: 'insensitive'
-            }
+            OR: [
+                {
+                    location: {
+                        contains: query.location,
+                        mode: 'insensitive'
+                    },
+                },
+                {
+                    technician: {
+                        location: {
+                            contains: query.location,
+                            mode: "insensitive"
+                        }
+                    }
+                }
+            ]
         })
     }
 
-    const [services, total] = await Promise.all([
+    const [data, total] = await Promise.all([
         prisma.service.findMany({
             where: {
-                AND: andConditions
+                AND: andConditions,
+                technician: { is_available: true }
             },
             include: {
                 category: true,
@@ -70,7 +83,8 @@ const getAllServices = async (query: IQuery) => {
                         experience_year: true,
                         is_available: true,
                         hourly_rate: true,
-                        location: true
+                        location: true,
+                        customer: { select: { name: true } }
                     }
                 }
             },
@@ -82,10 +96,24 @@ const getAllServices = async (query: IQuery) => {
         }),
         prisma.service.count({
             where: {
-                AND: andConditions
+                AND: andConditions,
+                technician: { is_available: true }
             }
         })
     ])
+
+    const services = data.map((service) => {
+        const technician = service.technician
+        const { customer, ...restTechnician } = technician
+
+        return {
+            ...service,
+            technician: {
+                ...restTechnician,
+                name: customer.name
+            }
+        }
+    })
 
     return {
         meta: {

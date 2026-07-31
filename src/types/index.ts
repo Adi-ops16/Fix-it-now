@@ -1,6 +1,10 @@
 import type { BookingStatus, Role, UserStatus } from "../prisma/generated/prisma/enums";
 
 export type {
+    LoginPayload
+} from "../schemas/LoginSchema"
+
+export type {
     TCreateCustomerPayload,
     TUpdateCustomerPayload,
     TManageCustomerPayload
