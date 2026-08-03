@@ -17,7 +17,12 @@ const getAllCustomers = async (query: IQuery) => {
         whereCondition.user_status = query.user_status
     }
 
+    if (query.role) {
+        whereCondition.role = query.role;
+    }
+
     const result = await prisma.customer.findMany({
+        where: whereCondition,
         omit: { password: true },
         orderBy: { created_at: sortOrder },
         take: limit,

@@ -57,6 +57,7 @@ export interface IQuery {
     technician_id?: string;
     sortBy?: string;
     location?: string
+    role?: Role
 }
 
 export type TMeta = {
