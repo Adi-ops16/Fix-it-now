@@ -15,8 +15,7 @@ const loginUserIntoDB = async (payload: ILoginPayload) => {
         omit: {
             photo_url: true,
             updated_at: true,
-            created_at: true,
-            name: true
+            created_at: true
         }
     })
 
@@ -29,12 +28,12 @@ const loginUserIntoDB = async (payload: ILoginPayload) => {
         throw new AppError(status.BAD_REQUEST, "Invalid Password")
     }
 
-
     const jwtPayload = {
         user_id: user.id,
         email,
         role: user.role,
-        user_status: user.user_status
+        user_status: user.user_status,
+        name: user.name
     }
 
     const accessToken = signToken(jwtPayload)

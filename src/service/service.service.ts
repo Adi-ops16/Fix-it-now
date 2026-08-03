@@ -194,7 +194,8 @@ const getMyServices = async (technician_id: string, query: IQuery) => {
                         experience_year: true,
                         is_available: true,
                         hourly_rate: true,
-                        location: true
+                        location: true,
+                        customer: { select: { name: true } }
                     }
                 }
             },
@@ -209,6 +210,19 @@ const getMyServices = async (technician_id: string, query: IQuery) => {
         })
     ])
 
+    const result = services.map((service) => {
+        const technician = service.technician
+        const { customer, ...restTechnician } = technician
+
+        return {
+            ...service,
+            technician: {
+                ...restTechnician,
+                name: customer.name
+            }
+        }
+    })
+
     return {
         meta: {
             page,
@@ -216,7 +230,7 @@ const getMyServices = async (technician_id: string, query: IQuery) => {
             totalDataCount: total,
             totalPages: Math.ceil(total / limit)
         },
-        data: services
+        data: result
     }
 }
 

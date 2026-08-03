@@ -28,24 +28,34 @@ const getTechnicianProfile = catchAsync(async (req, res, next) => {
 const createTechnician = catchAsync(async (req, res, next) => {
     const user_id = req.user?.id!
     const validatedData = createTechnicianSchema.parse(req.body);
-    const result = await technicianService.createTechnician(user_id, validatedData)
+    const { result, accessToken } = await technicianService.createTechnician(user_id, validatedData)
+
+    res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24,
+        secure: false,
+        sameSite: 'lax'
+    })
 
     sendResponse(res, {
         code: status.CREATED,
         message: "Technician profile created successfully",
-        data: result
+        data: {
+            ...result,
+            accessToken
+        }
     })
 })
 
 const updateTechnicianProfile = catchAsync(async (req, res, next) => {
     const id = req.user?.id!
     const validatedData = updateTechnicianSchema.parse(req.body)
-    const result = await technicianService.technicianProfileUpdate(id, validatedData)
+    const { user, accessToken } = await technicianService.technicianProfileUpdate(id, validatedData)
 
     sendResponse(res, {
         code: status.OK,
         message: "Profile updated Successfully",
-        data: result
+        data: { accessToken, ...user }
     })
 })
 

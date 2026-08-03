@@ -1,7 +1,7 @@
 import status from "http-status"
 import { prisma } from "../lib/prisma"
 import type { IQuery, TCreateTechnicianPayload, TUpdateTechnicianPayload } from "../types"
-import { AppError, removeUndefined } from "../utils"
+import { AppError, removeUndefined, signToken } from "../utils"
 import type { TechnicianProfileWhereInput } from "../prisma/generated/prisma/models"
 
 const getAllTechnicians = async (query: IQuery) => {
@@ -104,18 +104,52 @@ const createTechnician = async (user_id: string, payload: TCreateTechnicianPaylo
         return technician
     })
 
-    return result
+    const jwtPayload = {
+        user_id: result.user_id,
+        email: result.customer.email,
+        role: result.customer.role,
+        user_status: result.customer.user_status,
+        name: result.customer.name
+    }
+
+    const accessToken = signToken(jwtPayload)
+
+    return { result, accessToken }
 }
 
 const technicianProfileUpdate = async (user_id: string, payload: TUpdateTechnicianPayload) => {
     const data = removeUndefined(payload)
+    const { name, photo_url, ...profileData } = data
+    const updateData: any = { ...profileData };
 
-    const result = await prisma.technicianProfile.update({
+    if (name !== undefined || photo_url !== undefined) {
+        updateData.customer = {
+            update: {
+                ...(name !== undefined && { name }),
+                ...(photo_url !== undefined && { photo_url })
+            }
+        };
+    }
+
+    const user = await prisma.technicianProfile.update({
         where: { user_id },
-        data
-    })
+        data: updateData,
+        include: {
+            customer: { omit: { password: true } }
+        },
+        omit: { created_at: true, updated_at: true }
+    });
 
-    return result
+    const tokenPayload = {
+        user_id: user.user_id,
+        email: user.customer.email,
+        role: user.customer.role,
+        user_status: user.customer.user_status,
+        name: user.customer.name
+    }
+    const accessToken = signToken(tokenPayload)
+
+    return { user, accessToken }
 }
 
 export const technicianService = { getAllTechnicians, createTechnician, technicianProfileUpdate, getTechnicianProfile }

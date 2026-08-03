@@ -8,12 +8,18 @@ export const createTechnicianSchema = z.object({
     is_available: z.boolean().optional().default(true)
 })
 
-export const updateTechnicianSchema = createTechnicianSchema.partial().refine(
-    (data) => Object.keys(data).length > 0,
-    {
-        message: "At least one field must be provided for update",
-    }
-)
+export const updateTechnicianSchema = createTechnicianSchema
+    .partial()
+    .extend({
+        name: z.string().min(1, "Name cannot be empty").optional(),
+        photo_url: z.string().optional(),
+    })
+    .refine(
+        (data) => Object.keys(data).length > 0,
+        {
+            message: "At least one field must be provided for update",
+        }
+    );
 
 
 // Infer types from schemas

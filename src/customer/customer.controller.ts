@@ -1,5 +1,5 @@
 import status from "http-status";
-import { catchAsync, sendResponse } from "../utils";
+import { catchAsync, sendResponse, signToken } from "../utils";
 import { customerService } from "./customer.service";
 import { createCustomerSchema, manageCustomersSchema, updateCustomerSchema } from "../schemas/customer.schema";
 
@@ -41,11 +41,20 @@ const updateCustomerById = catchAsync(async (req, res, next) => {
     const id = req.params.id as string
     const validatedData = updateCustomerSchema.parse(req.body);
     const result = await customerService.updateCustomerById(id, validatedData)
+    const jwtPayload = {
+        user_id: result.id,
+        email: result.email,
+        role: result.role,
+        user_status: result.user_status,
+        name: result.name
+    }
+    const accessToken = signToken(jwtPayload)
+
 
     sendResponse(res, {
         code: status.OK,
         message: "Customer update successfully",
-        data: result
+        data: { accessToken, ...result }
     })
 })
 

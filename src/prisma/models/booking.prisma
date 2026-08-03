@@ -17,7 +17,7 @@ model Booking {
 
     customer   Customer          @relation(fields: [customer_id], references: [id])
     technician TechnicianProfile @relation(fields: [technician_id], references: [user_id])
-    service    Service           @relation(fields: [service_id], references: [id])
+    service    Service           @relation(fields: [service_id], references: [id], onDelete: Cascade)
     payment    Payment[]
     review     Review?
 
