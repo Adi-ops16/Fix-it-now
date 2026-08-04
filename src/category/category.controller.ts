@@ -42,7 +42,7 @@ const deleteCategory = catchAsync(async (req, res, next) => {
 
     sendResponse(res, {
         code: status.OK,
-        message: "Category updated successfully"
+        message: "Category deleted successfully"
     })
 })
 

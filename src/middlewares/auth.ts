@@ -23,7 +23,7 @@ const auth = (...roles: Role[]) => {
         const accessToken: string = req.cookies?.accessToken
 
         if (!accessToken) {
-            throw new AppError(status.NOT_FOUND, "Access token not found");
+            throw new AppError(status.NOT_FOUND, "Access token not found, please login and try again");
         }
 
         const isVerified = verifyToken(accessToken)
