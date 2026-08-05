@@ -12,6 +12,9 @@ const getAllTechnicians = async (query: IQuery) => {
     const sortOrder = query.sortOrder === "asc" ? "asc" : "desc"
 
     const andConditions: TechnicianProfileWhereInput[] = []
+    andConditions.push({
+        is_available: true
+    })
 
     if (query.location) {
         andConditions.push({
@@ -25,7 +28,10 @@ const getAllTechnicians = async (query: IQuery) => {
     const [technicians, total] = await Promise.all([
         prisma.technicianProfile.findMany({
             where: {
-                AND: andConditions
+                AND: andConditions,
+                customer: {
+                    user_status: "ACTIVE"
+                }
             },
             include: {
                 customer: {

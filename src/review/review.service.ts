@@ -78,9 +78,10 @@ const getReviewByBookingId = async (booking_id: string) => {
             technician: {
                 include: {
                     customer: {
-                        omit: { password: true }
+                        omit: { password: true, created_at: true, updated_at: true }
                     }
-                }
+                },
+                omit: { created_at: true, updated_at: true }
             }
         }
     });
