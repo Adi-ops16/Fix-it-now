@@ -8,6 +8,11 @@ type ErrorResponse = {
     error?: unknown;
 }
 
+type ErrorDetails = {
+    field: string;
+    message: string
+}
+
 const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
     let statusCode: number = err.statusCode ?? 500;
     let message: string = err.message || 'Internal Server Error';
@@ -20,12 +25,15 @@ const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFun
     // Handle Zod validation errors
     if (err instanceof ZodError) {
         statusCode = 400;
-        message = 'Validation Error';
-        errorResponse.message = message;
-        errorResponse.error = err.issues.map(issue => ({
+
+        const formattedErrors: ErrorDetails[] = err.issues.map((issue) => ({
             field: issue.path.join("."),
             message: issue.message,
-        }))
+        }));
+
+        message = formattedErrors.map(e => e.message).join(",");
+        errorResponse.message = message;
+
     } else if (config.node_env === 'development') {
         errorResponse['error'] = err.stack;
     }

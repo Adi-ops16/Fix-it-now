@@ -127,4 +127,59 @@ const manageCustomers = async (userId: string, status: UserStatus) => {
     return result
 }
 
-export const customerService = { getAllCustomers, getCustomerById, createCustomer, updateCustomerById, deleteCustomerById, manageCustomers }
+const getAppOverview = async () => {
+    const [
+        totalUsers,
+        workingTechnicians,
+        totalTechnicians,
+        totalBookings,
+        pendingBookings,
+        revenueResult,
+        averageRatingResult
+    ] = await Promise.all([
+        prisma.customer.count(),
+        prisma.technicianProfile.count({ where: { is_available: true } }),
+        prisma.technicianProfile.count(),
+        prisma.booking.count(),
+        prisma.booking.count({
+            where: {
+                booking_status: {
+                    notIn: ["CANCELLED", "DECLINED"]
+                }
+            }
+        }),
+        prisma.payment.aggregate({ _sum: { amount: true } }),
+        prisma.review.aggregate({ _avg: { rating: true } }),
+    ])
+
+    // 2. Perform calculations with safety checks against division-by-zero
+    const nonWorkingTechnicians = totalTechnicians - workingTechnicians
+    const workRate = Number(((workingTechnicians / totalTechnicians) * 100).toFixed(2))
+    const cancelledBooking = totalBookings - pendingBookings
+    const cancellationRate = totalBookings > 0
+        ? Number(((cancelledBooking / totalBookings) * 100).toFixed(2))
+        : 0
+
+    // 3. Extract aggregated values cleanly
+    const totalRevenue = revenueResult._sum.amount ?? 0
+    const averageRating = averageRatingResult._avg.rating
+        ? Number(averageRatingResult._avg.rating.toFixed(2))
+        : 0
+
+
+    return {
+        totalUsers,
+        workingTechnicians,
+        totalTechnicians,
+        nonWorkingTechnicians,
+        workRate,
+        totalBookings,
+        pendingBookings,
+        cancelledBooking,
+        cancellationRate,
+        totalRevenue,
+        averageRating
+    }
+}
+
+export const customerService = { getAllCustomers, getCustomerById, createCustomer, updateCustomerById, deleteCustomerById, manageCustomers, getAppOverview }

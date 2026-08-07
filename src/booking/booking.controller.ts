@@ -1,5 +1,5 @@
 import status from "http-status"
-import { createBookingSchema, updateBookingStatusSchema } from "../schemas/booking.schema"
+import { cancelBookingSchema, createBookingSchema, updateBookingStatusSchema } from "../schemas/booking.schema"
 import { catchAsync, sendResponse } from "../utils"
 import { bookingService } from "./booking.service"
 
@@ -65,6 +65,19 @@ const updateBookingStatus = catchAsync(async (req, res, next) => {
     })
 })
 
+const cancelBooking = catchAsync(async (req, res, next) => {
+    const userId = req.user?.id!
+    const validatedData = cancelBookingSchema.parse(req.body)
+    const result = await bookingService.cancelBooking(validatedData, userId)
+
+    sendResponse(res, {
+        code: status.OK,
+        message: "Bookings cancelled",
+        data: {
+            status: result.booking_status
+        }
+    })
+})
 
 
-export const bookingController = { getBookingDetails, getAllBookings, getMyBookings, createBooking, updateBookingStatus }
+export const bookingController = { getBookingDetails, getAllBookings, getMyBookings, createBooking, updateBookingStatus, cancelBooking }

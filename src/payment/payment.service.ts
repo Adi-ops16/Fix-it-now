@@ -32,6 +32,7 @@ const createCheckout = async (userId: string, booking_id: string) => {
     }
 
     if (!(booking.booking_status === "ACCEPTED")) {
+        console.log(booking)
         throw new AppError(status.BAD_REQUEST, "Booking is not accepted")
     }
 

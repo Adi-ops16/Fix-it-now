@@ -79,4 +79,14 @@ const manageCustomers = catchAsync(async (req, res, next) => {
     })
 })
 
-export const customerController = { getAllCustomers, getCustomerById, updateCustomerById, createCustomer, deleteCustomerById, manageCustomers }
+const getAppOverview = catchAsync(async (req, res, next) => {
+    const result = await customerService.getAppOverview()
+
+    sendResponse(res, {
+        code: status.OK,
+        message: "overview retrieved",
+        data: result
+    })
+})
+
+export const customerController = { getAllCustomers, getCustomerById, updateCustomerById, createCustomer, deleteCustomerById, manageCustomers, getAppOverview }

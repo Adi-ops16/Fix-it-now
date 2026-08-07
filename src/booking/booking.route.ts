@@ -9,6 +9,11 @@ router.get('/all', auth("ADMIN"), bookingController.getAllBookings)
 router.get('/:bookingId', auth("CUSTOMER"), bookingController.getBookingDetails)
 router.post('/', auth("CUSTOMER"), bookingController.createBooking)
 router.patch(
+    '/status/cancel',
+    auth("CUSTOMER"),
+    bookingController.cancelBooking
+)
+router.patch(
     '/status',
     auth("ADMIN", "CUSTOMER", "TECHNICIAN"),
     bookingController.updateBookingStatus

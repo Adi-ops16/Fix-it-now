@@ -1,6 +1,6 @@
 import status from "http-status"
 import { prisma } from "../lib/prisma"
-import type { IQuery, TCreateBookingPayload, TUpdateBookingStatusPayload } from "../types"
+import type { IQuery, TCancelBookingPayload, TCreateBookingPayload, TUpdateBookingStatusPayload } from "../types"
 import { AppError, combineDateTime, getEndTime } from "../utils"
 import type { Role, Weekdays } from "../prisma/generated/prisma/enums"
 import type { BookingWhereInput } from "../prisma/generated/prisma/models"
@@ -62,7 +62,16 @@ const getMyBookings = async (userId: string, role: Role, query: IQuery) => {
 
     const result = await prisma.booking.findMany({
         where: whereCondition,
-        orderBy: { created_at: sortOrder }
+        orderBy: { created_at: sortOrder },
+        include: {
+            service: {
+                select: {
+                    category: { select: { name: true } },
+                    title: true
+                }
+            },
+
+        }
     })
 
     return result
@@ -168,14 +177,6 @@ const updateBookingStatus = async (userId: string, role: Role, payload: TUpdateB
     if (role === "CUSTOMER" && status === "DECLINED") {
         throw new AppError(403, "Customers cannot decline bookings. Did you mean to cancel?");
     }
-    if (role !== "CUSTOMER" && status === "CANCELLED") {
-        throw new AppError(409, "Only customers can cancel a booking");
-    }
-    if (role === "CUSTOMER" && status === "CANCELLED") {
-        if (booking.booking_status === "IN_PROGRESS") {
-            throw new AppError(409, "Customer cannot cancel an in-progress booking");
-        }
-    }
 
     const result = await prisma.booking.update({
         where: { id: booking_id, ...whereCondition },
@@ -201,12 +202,25 @@ const getBookingDetails = async (booking_id: string, customer_id: string) => {
             customer_id
         },
         include: {
-            technician: true,
-            payment: true,
+            technician: {
+                include: { customer: true }
+            },
         }
     })
 
     return result
 }
 
-export const bookingService = { getAllBookings, getMyBookings, createBooking, updateBookingStatus, getBookingDetails }
+const cancelBooking = async (payload: TCancelBookingPayload, customerId: string) => {
+    const result = await prisma.booking.update({
+        where: { id: payload.booking_id, customer_id: customerId },
+        data: {
+            cancellation_reason: payload.cancellationReason,
+            booking_status: "CANCELLED"
+        }
+    })
+
+    return result
+}
+
+export const bookingService = { getAllBookings, getMyBookings, createBooking, updateBookingStatus, getBookingDetails, cancelBooking }

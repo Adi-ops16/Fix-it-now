@@ -31,7 +31,8 @@ export type {
 
 export type {
     TCreateBookingPayload,
-    TUpdateBookingStatusPayload
+    TUpdateBookingStatusPayload,
+    TCancelBookingPayload
 } from '../schemas/booking.schema'
 
 export type {

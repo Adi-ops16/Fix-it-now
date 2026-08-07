@@ -7,7 +7,6 @@ export const createReviewSchema = z.object({
     rating: z.number({
         error: "Rating is required and must be a number"
     })
-        .int({ message: "Rating must be an integer" })
         .min(1, { message: "Rating must be at least 1" })
         .max(5, { message: "Rating cannot be more than 5" }),
     comment: z.string({ error: "Comment must be a string" })

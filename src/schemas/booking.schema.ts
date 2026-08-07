@@ -35,12 +35,21 @@ export const updateBookingStatusSchema = z.object({
     status: z.enum(BookingStatus, {
         error: "Status must be a valid enum"
     }).refine(
-        status => status !== "PAID" && status !== "REQUESTED",
+        status => status !== "PAID" && status !== "REQUESTED" && status !== "CANCELLED",
         {
-            error: "Status cannot be 'Requested' or 'Paid' "
+            error: "Status cannot be 'Requested' or 'Paid' or 'cancel' "
         }
     )
 })
 
+export const cancelBookingSchema = z.object({
+    booking_id: z.uuid(),
+    cancellationReason: z.string().min(5, "Cancellation reason is required and must be more than 5 characters"),
+    status: z.literal("CANCELLED", {
+        error: "Status can't be anything without CANCELLED"
+    })
+})
+
 export type TCreateBookingPayload = z.infer<typeof createBookingSchema>;
 export type TUpdateBookingStatusPayload = z.infer<typeof updateBookingStatusSchema>
+export type TCancelBookingPayload = z.infer<typeof cancelBookingSchema>

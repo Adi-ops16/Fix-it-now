@@ -56,14 +56,6 @@ const getAllServices = async (query: IQuery) => {
                         contains: query.location,
                         mode: 'insensitive'
                     },
-                },
-                {
-                    technician: {
-                        location: {
-                            contains: query.location,
-                            mode: "insensitive"
-                        }
-                    }
                 }
             ]
         })
@@ -235,6 +227,15 @@ const getMyServices = async (technician_id: string, query: IQuery) => {
 }
 
 const createService = async (technician_id: string, payload: TCreateServicePayload) => {
+
+    const availability = await prisma.technicianAvailability.findMany({
+        where: { technician_id }
+    })
+
+    if (!availability) {
+        throw new AppError(status.NOT_FOUND, "No schedule found, please create your availability schedule first")
+    }
+
     const result = await prisma.service.create({
         data: {
             ...payload,
