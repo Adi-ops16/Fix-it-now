@@ -54,7 +54,7 @@ const createCheckout = async (userId: string, booking_id: string) => {
         customer_email: booking.customer.email,
         mode: "payment",
         success_url: `${config.frontend_url}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${config.app_url}/payment/cancelled`,
+        cancel_url: `${config.frontend_url}/payment/cancel`,
         metadata: {
             booking_id: booking.id,
             customer_id: booking.customer_id,

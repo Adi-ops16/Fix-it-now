@@ -3,7 +3,7 @@ import path from 'node:path'
 
 dotenv.config({ path: path.join(process.cwd(), '.env'), quiet: true })
 
-const defaultAppUrl = "https://fix-it-now-seven.vercel.app";
+const defaultAppUrl = "https://fix-it-now-seven.vercel.app/";
 
 export default {
     database_url: process.env.DATABASE_URL!,
